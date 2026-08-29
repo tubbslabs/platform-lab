@@ -1,0 +1,16 @@
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!example.tfvars
+crash.log
+
+# Ansible
+*.retry
+
+# Credentials and cluster access
+kubeconfig*
+*.pem
+*.key
+.env
