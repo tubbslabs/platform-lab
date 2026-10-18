@@ -5,6 +5,7 @@
 *.tfvars
 !example.tfvars
 crash.log
+tfplan
 
 # Ansible
 *.retry
