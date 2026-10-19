@@ -5,9 +5,11 @@
 *.tfvars
 !example.tfvars
 crash.log
+tfplan
 
 # Ansible
 *.retry
+ansible/inventory/hosts.ini
 
 # Credentials and cluster access
 kubeconfig*
