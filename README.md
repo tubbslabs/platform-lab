@@ -35,10 +35,17 @@ Requires Terraform 1.9 or later and a Hetzner Cloud API token in `HCLOUD_TOKEN`.
 
 Applying also generates the Ansible inventory at `ansible/inventory/hosts.ini`.
 
+Then install k3s from the `ansible/` directory:
+
+    cd ansible
+    ansible-playbook site.yml
+
+This writes a kubeconfig to `~/.kube/config` pointing at the control plane's private IP.
+
 ## Status
 
 - [x] Infrastructure provisioning (Terraform)
-- [ ] Host configuration and k3s (Ansible)
+- [x] Host configuration and k3s (Ansible)
 - [ ] Packaging and GitOps delivery (Helm, Argo CD)
 - [ ] Ingress and TLS (Traefik, cert-manager)
 - [ ] CI (GitHub Actions)
