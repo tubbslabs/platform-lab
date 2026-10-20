@@ -1,0 +1,10 @@
+- name: Find the interface carrying the private IP
+  ansible.builtin.set_fact:
+    private_iface: >-
+      {{ ansible_interfaces
+         | map('regex_replace', '^', 'ansible_')
+         | map('extract', hostvars[inventory_hostname])
+         | selectattr('ipv4', 'defined')
+         | selectattr('ipv4.address', 'equalto', ansible_host)
+         | map(attribute='device')
+         | first }}
