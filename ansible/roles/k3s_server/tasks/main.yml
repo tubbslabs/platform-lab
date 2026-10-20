@@ -1,0 +1,36 @@
+- name: Install k3s in server mode
+  ansible.builtin.shell: >
+    curl -sfL https://get.k3s.io |
+    INSTALL_K3S_CHANNEL={{ k3s_channel }}
+    INSTALL_K3S_EXEC="server
+    --node-ip {{ ansible_host }}
+    --flannel-iface {{ private_iface }}
+    --tls-san {{ ansible_host }}"
+    sh -
+  args:
+    creates: /usr/local/bin/k3s
+
+- name: Read the cluster join token
+  ansible.builtin.slurp:
+    src: /var/lib/rancher/k3s/server/node-token
+  register: node_token
+
+- name: Keep the token as a fact for the agents
+  ansible.builtin.set_fact:
+    k3s_token: "{{ node_token.content | b64decode | trim }}"
+  no_log: true
+
+- name: Fetch the kubeconfig to the jump box
+  ansible.builtin.fetch:
+    src: /etc/rancher/k3s/k3s.yaml
+    dest: "{{ lookup('env', 'HOME') }}/.kube/k3s-raw.yaml"
+    flat: true
+
+- name: Write a kubeconfig pointing at the private IP
+  ansible.builtin.copy:
+    content: >-
+      {{ lookup('file', lookup('env', 'HOME') + '/.kube/k3s-raw.yaml')
+         | replace('127.0.0.1', ansible_host) }}
+    dest: "{{ lookup('env', 'HOME') }}/.kube/config"
+    mode: "0600"
+  delegate_to: localhost

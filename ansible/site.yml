@@ -1,0 +1,14 @@
+- name: Prepare all cluster nodes
+  hosts: k3s
+  roles:
+    - k3s_network
+
+- name: Install the k3s control plane
+  hosts: control
+  roles:
+    - k3s_server
+
+- name: Install the k3s agents
+  hosts: agents
+  roles:
+    - k3s_agent
